@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 const nodemailer = require('nodemailer')
 
 
@@ -7,9 +8,19 @@ require('./model/orcamento')
 const Orcamento = mongoose.model('Orcamento')
 
 const app = express()
+
+app.use((req, res, next) => {
+   res.header("Access-Control-Allow-Origin", "*")
+   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+   res.header("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type, Authorization")
+   app.use(cors())
+   next()
+})
+
+
 app.use(express.json())
 
-mongoose.connect('conexao', { 
+mongoose.connect('mongodb+srv://rrarangel:subzero@cluster0-pzqsd.gcp.mongodb.net/celke?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass%20Community&retryWrites=true&ssl=true', { 
    useNewUrlParser: true,
    useUnifiedTopology: true
 })
@@ -34,7 +45,7 @@ app.post('/orcamento', async (req, res) => {
 
       var transport = nodemailer.createTransport({
          host: 'smtp.mailtrap.io',
-         port: 2525,
+         port: 587,
          auth: {
             user: '05bb5553d09d2d',
             pass: '227f9bbccd33f3'
@@ -50,16 +61,19 @@ app.post('/orcamento', async (req, res) => {
           
       }
 
-      await transporter.sendMail(sendInfo, function(err){
+      transport.sendMail(sendInfo, function(err){
          if(err){
             console.log('Erro ao enviar o email: ' +err)
          }
+         console.log('Email enviado')
       });
 
+      console.log('Cadastrado com sucesso.')
       return res.json({
          error: false,
          message: 'Enviado com sucesso!'
       })
+      
    })
 
 })
