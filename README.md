@@ -1,2 +1,2 @@
-# Celke_Imersao_Node_React4
+# Celke Semana Imersao Node React 4
 Projeto desenvolvimento durante a semana de imersão React e Node através do site https://celke.com.br
